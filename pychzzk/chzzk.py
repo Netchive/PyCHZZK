@@ -1,5 +1,4 @@
 from typing import Optional
-import json
 from pychzzk.client import ChzzkClient, GameClient, Credentials
 from pychzzk.models import Channel, User, Video
 from pychzzk.models import _model as m
