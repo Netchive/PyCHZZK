@@ -1,0 +1,26 @@
+[tool.poetry]
+name = "pychzzk"
+version = "0.1.0a0"
+description = "NAVER CHZZK Python SDK"
+authors = ["Euiseo Cha <zeroday0619_dev@outlook.com>", "Netchive <support@netchive.com>"]
+license = "LICENSE"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+httpx = "^0.26.0"
+Scrapy = "^2.11.0"
+pydantic = "^2.5.2"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.3"
+pytest-cov = "^4.1.0"
+black = "^23.12.0"
+flake8 = "^6.1.0"
+isort = "^5.13.2"
+autoflake = "^2.2.1"
+mypy = "^1.7.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
