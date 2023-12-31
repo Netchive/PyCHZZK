@@ -5,9 +5,11 @@
 ### **Service**
 
 #### Home
-> https://api.chzzk.naver.com/service/v1/home/recommendation-channels
+>
+> <https://api.chzzk.naver.com/service/v1/home/recommendation-channels>
 
     HTTP Method: GET
+
 ```json
 {
     "code": 200,
@@ -31,11 +33,12 @@
 }
 ```
 
-> https://api.chzzk.naver.com/service/v1/home/lives
-    
+> <https://api.chzzk.naver.com/service/v1/home/lives>
+
     HTTP Method: GET
     Payload:
         includeLatestVideo: bool
+
 ```json
 {
     "code": 200,
@@ -129,10 +132,13 @@
 ### **comm-api**
 
 #### User
+
 * **Require authorized**
-> https://comm-api.game.naver.com/nng_main/v1/user/getUserStatus
-    
+
+> <https://comm-api.game.naver.com/nng_main/v1/user/getUserStatus>
+
     HTTP Method: GET
+
 ```json
 {
     "code": 200,
@@ -153,7 +159,7 @@
 
 #### Search
 
-> https://comm-api.game.naver.com/nng_main/v2/search/lounges/auto-complete
+> <https://comm-api.game.naver.com/nng_main/v2/search/lounges/auto-complete>
 
     HTTP Method: GET
     Payload:
@@ -179,7 +185,7 @@
 
 #### Search
 
-> https://api.chzzk.naver.com/service/v1/search/channels
+> <https://api.chzzk.naver.com/service/v1/search/channels>
 
     HTTP Method: GET
     Payload:
@@ -187,6 +193,7 @@
         offset: int
         size: int
         withFirstChannelContent: bool
+
 ```json
 {
     "code": 200,
@@ -215,13 +222,14 @@
 }
 ```
 
-> https://api.chzzk.naver.com/service/v1/search/lives
+> <https://api.chzzk.naver.com/service/v1/search/lives>
 
     HTTP Method: GET
     Payload:
         keyword: str
         offset: int
         size: int
+
 ```json
 {
     "code": 200,
@@ -262,13 +270,14 @@
 }
 ```
 
-> https://api.chzzk.naver.com/service/v1/search/videos
+> <https://api.chzzk.naver.com/service/v1/search/videos>
 
     HTTP Method: GET
     Payload:
         keyword: str
         offset: int
         size: int
+
 ```json
 {
     "code": 200,
@@ -311,7 +320,7 @@
 
 #### Channels
 
-> https://api.chzzk.naver.com/service/v1/channels/[channelId]
+> <https://api.chzzk.naver.com/service/v1/channels/[channelId>]
 
     HTTP Method: GET
 
@@ -332,7 +341,7 @@
 }
 ```
 
-> https://api.chzzk.naver.com/service/v1/channels/[channelId]/data
+> <https://api.chzzk.naver.com/service/v1/channels/[channelId]/data>
 
     HTTP Method: GET
     Payload:
@@ -367,7 +376,7 @@
 }
 ```
 
-> https://api.chzzk.naver.com/service/v1/channels/[channelId]/videos
+> <https://api.chzzk.naver.com/service/v1/channels/[channelId]/videos>
 
     HTTP Method: GET
     Payload:
@@ -418,9 +427,10 @@
 }
 ```
 
-> https://api.chzzk.naver.com/service/v1/channels/[channelId]/live-detail
+> <https://api.chzzk.naver.com/service/v1/channels/[channelId]/live-detail>
 
     HTTP Method: GET
+
 ```json
 {
     "code": 200,
@@ -456,9 +466,10 @@
 }
 ```
 
-> https://api.chzzk.naver.com/service/v1/channels/[channelId]/chat-rules
+> <https://api.chzzk.naver.com/service/v1/channels/[channelId]/chat-rules>
 
     HTTP Method: GET
+
 ```json
 {
     "code": 200,
@@ -472,12 +483,17 @@
     }
 }
 ```
+
 ---
+
 ### **Polling**
+
 #### channels
-> https://api.chzzk.naver.com/polling/v1/channels/[channelId]/live-status
+>
+> <https://api.chzzk.naver.com/polling/v1/channels/[channelId]/live-status>
 
     HTTP Method: GET
+
 ```json
 {
     "code": 200,

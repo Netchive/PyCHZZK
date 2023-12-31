@@ -26,6 +26,32 @@ class Chzzk:
             "withFirstChannelContent": withFirstChannelContent
         })
         return m.SearchChannel(**response)
+    
+    async def search_channels_live_info(self, keyword: str, offset: int, size: int, withFirstChannelContent: bool = True) -> list[Optional[m.SearchChannelsLiveInfo]]:
+        channels = await self.search_channel(
+            keyword=keyword,
+            offset=offset,
+            size=size,
+            withFirstChannelContent=withFirstChannelContent
+        )
+        lives: list[Optional[m.SearchChannelsLiveInfo]] = []
+        for channel in channels.data:
+            if channel.content.live:
+                live = {
+                    "channel_name": channel.channel.channel_name,
+                    "live": channel.content.live
+                }
+                lives.append(m.SearchChannelsLiveInfo(**live))
+        return lives
+    
+    async def search_channels_live_hls(self, keyword: str, offset: int, size: int, withFirstChannelContent: bool = True):
+        channels = await self.search_channels_live_info(
+            keyword=keyword,
+            offset=offset,
+            size=size,
+            withFirstChannelContent=withFirstChannelContent
+        )
+
     async def channel(self, channel_id: int) -> Channel:
         response = await self._client.get(f"services/v1/channels/{channel_id}")
         return m.Channel(**response).warp()

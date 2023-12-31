@@ -245,7 +245,7 @@ class meta(RawModel):
     live_id: str
     paid_live: bool
     cdn_info: cdnInfo
-    p2p: bool
+    p2p: bool = Field(alias="p2p")
 
 class live(RawModel):
     """
@@ -265,20 +265,21 @@ class api(RawModel):
 
 class encodingTrack(RawModel):
     encoding_track_id: str
-    video_profile: Optional[str]
-    audio_profile: str
-    video_codec: Optional[str]
-    video_bit_rate: Optional[int]
-    audio_bit_rate: Optional[int]
-    video_frame_rate: Optional[str]
-    video_width: Optional[int]
-    video_height: Optional[int]
+    video_profile: Optional[str] = None
+    audio_profile: Optional[str] = None
+    video_codec: Optional[str] = None
+    video_bit_rate: Optional[int] = None
+    audio_bit_rate: Optional[int] = None
+    video_frame_rate: Optional[str] = None
+    video_width: Optional[int] = None
+    video_height: Optional[int] = None
     audio_sampling_rate: int
     audio_channel: int
     avoid_reencoding: bool
-    video_dynamic_range: Optional[str]
-    audio_codec: Optional[str]
-    audio_only: Optional[bool]
+    video_dynamic_range: Optional[str] = None
+    audio_codec: Optional[str] = None
+    audio_only: Optional[bool] = None
+    path: Optional[HttpUrl] = None
 
 
 class thumbnail(RawModel):
@@ -292,8 +293,6 @@ class media(RawModel):
     path: HttpUrl
     latency: Optional[str] = None
     encoding_track: list[encodingTrack]
-    thumbnail: thumbnail
-    multiview: list
 
 
 class livePlaybackJson(RawModel):
@@ -302,3 +301,5 @@ class livePlaybackJson(RawModel):
     live: live
     api: list[api]
     media: list[media]
+    thumbnail: thumbnail
+    multiview: list

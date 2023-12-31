@@ -1,15 +1,13 @@
 from __future__ import annotations
 from typing import Optional, Literal, Any, TypeVar, Generic
 from datetime import datetime
-from pydantic import AliasPath, Field, HttpUrl
+from pydantic import AliasPath, Field, HttpUrl, BaseModel
 from pychzzk.models.base import RawModel
 from pychzzk.utils import to_kst
 from pychzzk import models as m
+from pychzzk.models.live_playback_json import livePlaybackJson
 
 import json
-
-
-T = TypeVar("T", bound="SearchRecord")
 
 
 class Following(RawModel):
@@ -59,31 +57,51 @@ class User(RawModel):
 
 class Live(RawModel):
     live_title: str
-    live_image_url: HttpUrl
+    live_image_url: str
     default_thumbnail_image_url: Optional[HttpUrl]
     concurrent_user_count: int
     accumulate_count: int
     open_date: str
-    live_id: int
+    live_id: str | int
     chat_channel_id: str
-    category_type: str
-    live_category: str
+    category_type: str | None
+    live_category: str | None
     live_category_value: str
     channel_id: str
     live_playback_json: str
 
-    def model_post_init(self, _: Any) -> None:
-        self.live_playback_json = json.loads(self.live_playback_json)
-
-
-
-
-
-
+    def warp(self) -> m.Live:
+        return m.Live(
+            live_title=self.live_title,
+            live_image_url=self.live_image_url if self.live_image_url is not None else None,
+            default_thumbnail_image_url=m.Resource(url=self.default_thumbnail_image_url) if self.default_thumbnail_image_url is not None else None,
+            concurrent_user_count=self.concurrent_user_count,
+            accumulate_count=self.accumulate_count,
+            open_date=self.open_date,
+            live_id=self.live_id,
+            chat_channel_id=self.chat_channel_id,
+            category_type=self.category_type,
+            live_category=self.live_category,
+            live_category_value=self.live_category_value,
+            channel_id=self.channel_id,
+            live_playback_json=livePlaybackJson(**json.loads(self.live_playback_json))
+        )
 
 class Content(RawModel):
-    live: Live
-    videos: Optional[list[Videos]]
+    live: Optional[Live] = None
+    videos: Optional[list[m.Videos]] = None
+
+    def warp(self):
+        if self.live:
+            return m.Content(
+                live=self.live.warp(),
+                videos=self.videos
+            )
+        else:
+            return m.Content(
+                live=None,
+                videos=self.videos
+            )
 
 class Channel(RawModel):
     channel_id: str
@@ -95,7 +113,6 @@ class Channel(RawModel):
     follower_count: Optional[int] = None
     open_live: Optional[bool] = None
     personal_data: Optional[PersonalData] = None
-
     def warp(self) -> m.Channel:
         following = None
         blocked = None
@@ -116,22 +133,6 @@ class Channel(RawModel):
             following=following,
             blocked=blocked
         )
-
-
-class Videos(RawModel):
-    video_no: int
-    video_id: str
-    video_title: str
-    video_type: str
-    publish_date: str
-    thumbnail_image_url: HttpUrl
-    duration: int
-    read_count: int
-    channel_id: str
-    publish_date_at: int
-    category_type: Optional[str]
-    video_category: str
-    video_category_value: str
 
 
 class Video(RawModel):
@@ -185,24 +186,28 @@ class Video(RawModel):
         )
 
 
-class SearchRecord(RawModel):
-    pass
-
-
-class VideoSearchRecord(SearchRecord):
+class VideoSearchRecord(m.SearchRecord):
     video: Video
     channel: Channel
 
 
-class ChannelSearchRecord(SearchRecord):
-    channel: Channel
-    content: Content
-
-
-class SearchCursor(RawModel, Generic[T]):
-    size: int
-    next: int = Field(alias=AliasPath("page", "next", "offset"))
-    data: list[T]
-
-class SearchChannel(SearchCursor):
+class ChannelSearchRecord(m.SearchRecord):
+    channel: Optional[Channel] = None
+    content: Optional[Content] = None
+    def model_post_init(self, _: Any) -> None:
+        if self.content:
+            self.content = self.content.warp()
+        
+class SearchChannel(m.SearchCursor):
     data: list[ChannelSearchRecord]
+
+
+class SearchChannelsLiveInfo(BaseModel):
+    """
+    live = {
+        "channel_name": channel.channel.channel_name,
+        "live": channel.content.live
+    }
+    """
+    channel_name: str
+    live: m.Live
