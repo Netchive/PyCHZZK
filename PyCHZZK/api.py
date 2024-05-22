@@ -1,6 +1,8 @@
 from .enums import Fields
 from .utils import null_check
 from ._http import HTTP
+from .exceptions import OfflineException
+from .exceptions import ChannelNotFound
 
 
 class Channels(HTTP):
@@ -72,3 +74,74 @@ class Channels(HTTP):
         raw_data = response.json()
         content = null_check(raw_data.get("content"))
         return content
+    
+    async def get_info(self, channel_id: str) -> dict:
+        """Get channel info
+
+        example:
+            ```python
+            import asyncio
+            from PyCHHZK.api import Channels
+            
+            async def print_channel_info():
+                channel = Channels()
+                channel_info = await channel.get_info(channel_id)
+                print(channel_info)
+            
+            asyncio.run(print_channel_info())
+            ```
+
+        Args:
+            channel_id (str): Channel ID
+        
+        Returns:
+            dict: Channel info
+        """
+        response = await self.fetch("GET", f"channels/{channel_id}")
+        raw_data = response.json()
+        content = null_check(raw_data.get("content"))
+        
+        def check_vaild_response(response: dict) -> bool:
+            return not response["channelId"]
+        check = check_vaild_response(content)
+        if check:
+            raise ChannelNotFound(channel_id)
+        return content
+
+    async def get_live_status(self, channel_id: str) -> dict:
+        """Get channel live status
+
+        example:
+            ```python
+            import asyncio
+            from PyCHHZK.api import Channels
+            
+            async def print_live_status():
+                channel = Channels()
+                live_status = await channel.get_live_status(channel_id)
+                print(live_status)
+            
+            asyncio.run(print_live_status())
+            ```
+
+        Args:
+            channel_id (str): Channel ID
+        
+        Returns:
+            dict: Channel live status
+        """
+
+        resp = await self.get_info(channel_id)
+        live_status: bool = resp["openLive"]
+
+        if live_status:
+            self.temp_base_url = self.base_url
+            self.base_url = "https://api.chzzk.naver.com/polling/v2/"
+            response = await self.fetch("GET", f"channels/{channel_id}/live-status")
+            self.base_url = self.temp_base_url
+            del self.temp_base_url
+            raw_data = response.json()
+            content = null_check(raw_data.get("content"))
+            return content
+        else:
+            raise OfflineException()

@@ -35,6 +35,32 @@ async def print_channel_data():
 
 asyncio.run(print_channel_data())
 ```
+---
+**channel.get_info**
+```python
+import asyncio
+from PyCHHZK.api import Channels
+
+async def print_channel_info():
+    channel = Channels()
+    channel_info = await channel.get_info(channel_id)
+    print(channel_info)
+
+asyncio.run(print_channel_info())
+```
+---
+**channel.get_live_status**
+```python
+import asyncio
+from PyCHHZK.api import Channels
+
+async def print_live_status():
+    channel = Channels()
+    live_status = await channel.get_live_status(channel_id)
+    print(live_status)
+
+asyncio.run(print_live_status())
+```
 
 ## License
 Licensed under the [MIT](./LICENSE)
