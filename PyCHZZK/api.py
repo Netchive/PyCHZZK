@@ -1,4 +1,6 @@
 from .enums import Fields
+from .enums import SortType
+from .enums import PagingType
 from .utils import null_check
 from ._http import HTTP
 from .exceptions import OfflineException
@@ -145,3 +147,45 @@ class Channels(HTTP):
             return content
         else:
             raise OfflineException()
+    
+    async def get_videos(self, channel_id: str, sort_type: SortType, paging_type: PagingType, page: int, size: int, publish_date_at: str | None = None, video_type: str | None = None) -> list[dict]:
+        """Get channel VODs
+
+        example:
+            ```python
+            import asyncio
+            from PyCHHZK.api import Channels
+            from PyCHZZK.enums import SortType
+            from PyCHZZK.enums import PagingType
+
+            async def print_videos():
+                channel = Channels()
+                videos = await channel.get_videos(channel_id, SortType.LATEST, PagingType.PAGE, 0, 10)
+                print(videos)
+            
+            asyncio.run(print_videos())
+            ```
+
+        Args:
+            channel_id (str): Channel ID
+            sort_type (SortType): Sort type
+            paging_type (PagingType): Paging type
+            page (int): Page
+            size (int): Size
+            publish_date_at (str, optional): Publish date at
+            video_type (str, optional): Video type
+        
+        Returns:
+            list: Channel VODs
+        """
+        resp = await self.fetch("GET", f"channels/{channel_id}/videos", params={
+            "sortType": sort_type.value,
+            "pagingType": paging_type.value,
+            "page": page,
+            "size": size,
+            "publishDateAt": publish_date_at,
+            "videoType": video_type
+        })
+        content = null_check(resp.json().get("content"))
+        data = null_check(content.get("data"))
+        return data
