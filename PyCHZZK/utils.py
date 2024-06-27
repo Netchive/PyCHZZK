@@ -3,7 +3,8 @@ def null_check(value):
         return value
     else:
         raise ValueError("is null!")
-    
+
+
 __all__ = [
     "null_check"
 ]

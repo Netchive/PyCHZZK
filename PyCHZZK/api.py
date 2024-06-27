@@ -15,7 +15,8 @@ class Channels(HTTP):
             },
             base_url="https://api.chzzk.naver.com/service/v1/"
         )
-    
+        self.temp_base_url = None
+
     async def search(self, keyword: str) -> list[dict]:
         """Search channels
 
@@ -103,9 +104,9 @@ class Channels(HTTP):
         raw_data = response.json()
         content = null_check(raw_data.get("content"))
         
-        def check_vaild_response(response: dict) -> bool:
+        def check_valid_response(response: dict) -> bool:
             return not response["channelId"]
-        check = check_vaild_response(content)
+        check = check_valid_response(content)
         if check:
             raise ChannelNotFound(channel_id)
         return content
